@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 
-let allBooks = [];
+let booksPromiseObj = {};
 function groupbyAuthor(array) {
   const obj = {};
   for (let i = 0; i < array.length; i += 1) {
@@ -31,26 +31,39 @@ const getAllRating = (bookArray) => {
     books: bookArray.books,
     promiseArray,
   };
+  booksPromiseObj = booksAndPromise;
   return booksAndPromise;
-};
-
-const booksWithRating = (booksAndPromise) => {
-  Promise.all(booksAndPromise.promiseArray).then((ratingArray) => {
-    for (let i = 0; i < booksAndPromise.books.length; i += 1) {
-      booksAndPromise.books[i].rating = JSON.parse(ratingArray[i]).rating;
-    }
-    return (booksAndPromise.books);
-  });
-  allBooks = booksAndPromise.books;
-  return (booksAndPromise.books);
 };
 
 const routes = [{
   method: 'GET',
   path: '/books',
   handler: (request, response) => {
-    getBooksPromise.then(getAllRating).then(booksWithRating).then((booksArray) => {
-      response(groupbyAuthor(booksArray));
+    getBooksPromise.then(getAllRating).then((booksAndPromise) => {
+      Promise.all(booksAndPromise.promiseArray).then((ratingArray) => {
+        for (let i = 0; i < booksAndPromise.books.length; i += 1) {
+          booksAndPromise.books[i].rating = JSON.parse(ratingArray[i]).rating;
+        }
+        return (booksAndPromise.books);
+      }).then((booksArray) => {
+        response(groupbyAuthor(booksArray));
+      });
+    });
+  },
+},
+{
+  method: 'POST',
+  path: '/books/savebooks',
+  handler: (request, response) => {
+    getBooksPromise.then(getAllRating).then((booksAndPromise) => {
+      Promise.all(booksAndPromise.promiseArray).then((ratingArray) => {
+        for (let i = 0; i < booksAndPromise.books.length; i += 1) {
+          booksAndPromise.books[i].rating = JSON.parse(ratingArray[i]).rating;
+        }
+        return (booksAndPromise.books);
+      }).then((booksArray) => {
+
+      });
     });
   },
 },
