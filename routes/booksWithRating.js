@@ -83,6 +83,33 @@ const routes = [{
     });
   },
 },
+{
+  method: 'POST',
+  path: '/books/like/{id}',
+  handler: (request, response) => {
+    Models.favbooks.update(
+      {
+        dislike: 'false',
+        like: 'true',
+      },
+      { where: { bookId: request.params.id } },
+    ).then(() => response({ status: 201 }));
+  },
+},
+{
+  method: 'POST',
+  path: '/books/dislike/{id}',
+  handler: (request, response) => {
+    Models.favbooks.update(
+      {
+        dislike: 'true',
+        like: 'false',
+      },
+      { where: { bookId: request.params.id } },
+    ).then(() => response({ status: 201 }));
+  },
+},
+
 ];
 
 module.exports = routes;
