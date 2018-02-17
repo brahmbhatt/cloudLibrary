@@ -70,6 +70,12 @@ const routes = [{
             bookId: booksArray[i].id,
             rating: booksArray[i].rating,
           });
+
+          Models.favbooks.create({
+            bookId: booksArray[i].id,
+            like: 'false',
+            dislike: 'false',
+          });
         }
       }).then(() => {
         response({ statusCode: 201 });
