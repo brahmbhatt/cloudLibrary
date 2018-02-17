@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const Models = require('../models');
 
 let booksPromiseObj = {};
 function groupbyAuthor(array) {
@@ -62,7 +63,16 @@ const routes = [{
         }
         return (booksAndPromise.books);
       }).then((booksArray) => {
-
+        for (let i = 0; i < booksArray.length; i += 1) {
+          Models.books.create({
+            Author: booksArray[i].Author,
+            Name: booksArray[i].Name,
+            bookId: booksArray[i].id,
+            rating: booksArray[i].rating,
+          });
+        }
+      }).then(() => {
+        response({ statusCode: 201 });
       });
     });
   },
