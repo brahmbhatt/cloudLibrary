@@ -1,4 +1,4 @@
 const ping = require('./ping');
-const books = require('./booksWithRating');
+const routes = require('./booksWithRating');
 
-module.exports = [].concat(ping, books);
+module.exports = [].concat(ping, routes);
