@@ -142,7 +142,7 @@ const routes = [{
       // console.log('inside GET :', notes);
       // response(JSON.stringify(notes));
     }).then((booksArray) => {
-      Models.likesArray.findAll().then((allLikes) => {
+      Models.favbooks.findAll().then((allLikes) => {
         const likesArray = [];
         allLikes.forEach((like) => {
           likesArray.push({
@@ -154,6 +154,15 @@ const routes = [{
         const result = { booksArray, likesArray };
         response(result);
       });
+    });
+  },
+},
+{
+  method: 'GET',
+  path: '/books/ispresent',
+  handler: (request, response) => {
+    Models.books.findAll().then((arr) => {
+      if (arr.length === 0) { response('0'); } else { response('1'); }
     });
   },
 },
