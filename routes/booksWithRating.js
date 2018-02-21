@@ -1,3 +1,4 @@
+
 const rp = require('request-promise');
 const Models = require('../models');
 
@@ -80,7 +81,7 @@ const routes = [{
           Models.favbooks.create({
             bookId: booksArray[i].id,
             like: 'false',
-            dislike: 'false',
+            dislike: 'true',
           });
         }
       }).then(() => {
@@ -123,7 +124,39 @@ const routes = [{
     });
   },
 },
-
+{
+  method: 'GET',
+  path: '/books/getbooks',
+  handler: (request, response) => {
+    Models.books.findAll().then((allBooks) => {
+      const booksArray = [];
+      allBooks.forEach((book) => {
+        booksArray.push({
+          Author: book.Author,
+          Name: book.Name,
+          bookId: book.bookId,
+          rating: book.rating,
+        });
+      });
+      return booksArray;
+      // console.log('inside GET :', notes);
+      // response(JSON.stringify(notes));
+    }).then((booksArray) => {
+      Models.likesArray.findAll().then((allLikes) => {
+        const likesArray = [];
+        allLikes.forEach((like) => {
+          likesArray.push({
+            bookId: like.bookId,
+            like: like.like,
+            dislike: like.dislike,
+          });
+        });
+        const result = { booksArray, likesArray };
+        response(result);
+      });
+    });
+  },
+},
 ];
 
 module.exports = { routes, groupbyAuthor };
